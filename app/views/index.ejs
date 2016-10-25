@@ -1,1 +1,24 @@
-<h1>Hello</h1>
+<html>
+<head>
+	<title>LetsMeet | Who are you?</title>
+	<link rel="stylesheet" type="text/css" href="css/styles.css">
+</head>
+<body>
+	<div class="login-page">
+	  <div class="form">
+	    <form class="login-form" action="/login" method='post'>
+	      <% if (loginMessage.length > 0) {%>
+	      <p class="warning"><%= loginMessage %></p>
+	      <% } %>
+	      <input type="text" name="username" placeholder="username / email"/>
+	      <input type="password" name="password" placeholder="password"/>
+	      <input type="submit" class="button" value="Login"/>
+	    </form>
+	      <p class="message">Or use any of the following:</p>
+	      <button class="button facebook" href>Facebook!</button>
+	      <button class="button google">Google</button>
+	      <p class="message">Need an account? <a href="/signup">Create one!</a></p>
+	  </div>
+	</div>
+</body>
+</html>

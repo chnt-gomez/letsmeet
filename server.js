@@ -21,12 +21,14 @@ var configDatabase 	= require('./config/database')
 
 var port = process.env.PORT || 8080;
 
-/* ================= Database connection ===== */
+/* ================= Database connection (Set only 1) ===== */
 
-mongoose.connect(configDatabase.url);
+//mongoose.connect(configDatabase.url); // <--- Local
+//mongoose.createConnection(configDatabase.modulusUrl); // <-- Modulus
 
 /* =========== Module Init =================== */
 
+require('./config/passport')(passport);
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(session({
@@ -34,6 +36,7 @@ app.use(session({
 	saveUninitialized: true,
 	resave: true
 }));
+app.use(express.static(__dirname + '/public'));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
@@ -41,10 +44,10 @@ app.set('view engine', 'ejs');
 
 /* ============== Routing ==================== */
 
-require('./app/models/routes')(app, passport);
+require('./app/routes')(app, passport);
 
 /* ============== Start the server =========== */
 app.listen(port);
-console.log('LetsMeet is alive and listening at port '+port);
+console.log('LetsMeet is alive and listening at port ' + port);
 
 
