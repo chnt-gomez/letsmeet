@@ -23,8 +23,8 @@ var port = process.env.PORT || 8080;
 
 /* ================= Database connection (Set only 1) ===== */
 
-//mongoose.connect(configDatabase.url); // <--- Local
-//mongoose.connect(configDatabase.modulusUrl); // <-- Modulus
+//mongoose.connect(configDatabase.url); // 			<--- Local
+//mongoose.connect(configDatabase.modulusUrl);		<--- Modulus
 
 /* =========== Module Init =================== */
 
