@@ -1,5 +1,7 @@
 var FacebookStrategy = require('passport-facebook').Strategy;
+var GoogleStrategy = require('passport-google-oauth').Strategy;
 var facebookAuth = require('./facebook');
+var googleAuth = require('./google');
 var User = require ('../app/models/user');
 
 module.exports = function(passport){
@@ -42,12 +44,41 @@ module.exports = function(passport){
 	    					return done(null, newUser);
 	    				});
 	    				console.log(profile);
-
 	    			}
 	    		});
 	    	});
-	    	//done(null, profile);
 	    }
+	));
 
+	/*=========== Google Authentication ===========*/
+
+	passport.use(new GoogleStrategy({
+	    consumerKey: googleAuth.consumerKey,
+	    consumerSecret: googleAuth.consumerSecret,
+	    callbackURL: googleAuth.callbackUrl
+	  },
+	  function(accessToken, refreshToken, profile, done) {
+	    	process.nextTick(function(){
+	    		User.findOne({'google.id': profile.id}, function(err, user){
+	    			if(err)
+	    				return done(err);
+	    			if(user)
+	    				return done(null, user);
+	    			else {
+	    				var newUser = new User();
+	    				newUser.google.id = profile.id;
+	    				newUser.google.token = accessToken;
+	    				newUser.google.name = profile.displayName;
+	    				//newUser.google.email = profile.emails[0].value;
+	    				newUser.save(function(err){
+	    					if(err)
+	    						throw err;
+	    					return done(null, newUser);
+	    				});
+	    				console.log(profile);
+	    			}
+	    		});
+	    	});
+	    }
 	));
 }

@@ -8,14 +8,13 @@ module.exports = function (app, passport){
 		});
 	});
 
-
 	app.get('/profile', isLoggedIn, function(req, res){
 			res.writeHead(200, {'Content-Type':'application/json'});
 			var profileJson = {user: req.user.id};
 			var json = JSON.stringify({
 				anObject : profileJson
 			});
-		res.end(json);
+		response.end(json);
 	});
 
 	app.get('/auth/facebook', passport.authenticate('facebook', {scope : ['email']}));
@@ -25,12 +24,19 @@ module.exports = function (app, passport){
 			successRedirect : '/profile',
 		 	failureRedirect : '/'}));
 
+	app.get('/auth/google', passport.authenticate('google', {scope : ['profile', 'email']}));
+
+	app.get('/auth/google/callback', 
+		passport.authenticate('google', {
+			successRedirect : '/profile',
+		 	failureRedirect : '/'}));
+
 	/* ========== Is LoggedIn function ======== */
 
 	function isLoggedIn(req, res, next){
 		if (req.isAuthenticated()){
 			return next();
 		}
-		res.redirect('/auth/facebook');
+		res.redirect('/profile');
 	}
 }
