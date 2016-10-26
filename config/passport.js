@@ -9,7 +9,7 @@ module.exports = function(passport){
 	});
 
 	passport.deserializeUser(function(id, done){
-		User.findById(id, function(err, done){
+		User.findById(id, function(err, user){
 			done(err, user)
 		});
 	});
@@ -34,17 +34,19 @@ module.exports = function(passport){
 	    				newUser.facebook.id = profile.id;
 	    				newUser.facebook.token = accessToken;
 	    				newUser.facebook.name = profile.name.givenName + ' ' + profile.name.familyName;
-	    				newUser.facebook.email = profile.emails[0].value;
+	    				//newUser.facebook.email = profile.emails[0].value;
 
 	    				newUser.save(function(err){
 	    					if(err)
 	    						throw err;
 	    					return done(null, newUser);
-	    				})
+	    				});
 	    				console.log(profile);
+
 	    			}
 	    		});
 	    	});
+	    	//done(null, profile);
 	    }
 
 	));

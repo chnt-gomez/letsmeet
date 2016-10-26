@@ -15,7 +15,7 @@ module.exports = function (app, passport){
 			var json = JSON.stringify({
 				anObject : profileJson
 			});
-		response.end(json);
+		res.end(json);
 	});
 
 	app.get('/auth/facebook', passport.authenticate('facebook', {scope : ['email']}));
