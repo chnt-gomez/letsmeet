@@ -1,9 +1,9 @@
 var mongoose = require('mongoose');
 var UserSchema = mongoose.Schema({
 	local:{
-		id: String,
 		alias: String,
-		email: String
+		email: String,
+		password : String
 	},
 	facebook:{
 		id: String,

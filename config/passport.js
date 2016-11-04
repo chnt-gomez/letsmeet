@@ -1,5 +1,6 @@
 var FacebookStrategy = require('passport-facebook').Strategy;
 var GoogleStrategy = require('passport-google-oauth').Strategy;
+var LocalStrategy = require('passport-local').Strategy;
 var facebookAuth = require('./facebook');
 var googleAuth = require('./google');
 var User = require ('../app/models/user');
@@ -15,6 +16,37 @@ module.exports = function(passport){
 			done(err, user)
 		});
 	});
+
+
+	/*=========== Local Authentication ==============*/
+
+	/* Signup */
+
+	passport.use('signup', new LocalStrategy({
+		usernameField: 'email',
+		passwordField: 'password'
+	}, function(req, email, password, next){
+		process.nextTick(function(){
+			User.findOne ({'local.email' : alias}, function(err, user, info){
+				if (err)
+					return next(err);
+				if(user)
+					return next(null, false);
+				if(user && info){
+					var newUser = new User();
+					newUser.local.email = email;
+					newUser.local.password = password;
+					newUser.local.alias = req.params.alias;	
+					newUser.save(function(err){
+					if(err)
+						return next(err)
+					res.send('User saved');
+					});
+				}
+			});
+		});
+	}));
+
 
 
 	/*=========== Facebook Authentication ===========*/
@@ -37,7 +69,6 @@ module.exports = function(passport){
 	    				newUser.facebook.token = accessToken;
 	    				newUser.facebook.name = profile.name.givenName + ' ' + profile.name.familyName;
 	    				//newUser.facebook.email = profile.emails[0].value;
-
 	    				newUser.save(function(err){
 	    					if(err)
 	    						throw err;
