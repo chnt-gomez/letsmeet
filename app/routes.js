@@ -1,4 +1,5 @@
 /* ========== Routings ======================= */
+var User = require ('../app/models/user');
 
 module.exports = function (app, passport){
 
@@ -8,6 +9,10 @@ module.exports = function (app, passport){
 		failureFlash: true
 	}));
 
+	app.get('/api/test', function(req, res){
+		res.json({'message' : 'this will be a very big call to see if there is a way to test all server'});
+	})
+
 	/*===== SECURE ==== */
 
 	app.get('/me', isLoggedIn,  function(req, res, next){
@@ -16,8 +21,10 @@ module.exports = function (app, passport){
 
 	/* ========== Errors ====================== */
 
-	app.get('/loginerr', function(req, res, next){
-		res.json({'error' : req.flash('signupMessage')});
+	app.get('/loginerr', function(req, res, next){4
+		var message = req.flash('signupMessage');
+		
+		res.json({'error' : message[0]});
 	});
 
 	app.get('/unauthorized', function(req, res, next){
