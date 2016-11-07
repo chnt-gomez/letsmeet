@@ -1,22 +1,21 @@
 var mongoose = require('mongoose');
-var UserSchema = mongoose.Schema({
-	local:{
-		alias: String,
-		email: String,
-		password : String
-	},
-	facebook:{
-		id: String,
-		name: String,
-		email: String,
-		token: String
-	},
-	google:{
-		id: String,
-		name: String,
-		email: String,
-		token: String,
-	}
+var bcrypt = require ('bcrypt-nodejs');
+var Schema = mongoose.Schema;
+
+
+var UserSchema = new Schema({
+	email: {type : String, required : true}, 
+	password : {type :String, required : true}
 });
 
-module.exports = mongoose.model('userModel', UserSchema);
+var LocalUserSchema = mongoose.Schema();
+
+LocalUserSchema.methods.encryptPassword = function(password){
+	return bcrypt.hashSync(password, bcrypt.generateSaltSync(9), null);
+};
+
+LocalUserSchema.methods.validPassword = function (password){
+	return bcrypt.compareSync(password, this.local.password);
+}
+
+module.exports = mongoose.model('user', LocalUserSchema);

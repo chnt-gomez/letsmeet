@@ -2,6 +2,7 @@
   "name": "node-token-jwt",
   "main": "server.jsss",
   "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "latest",
     "connect-flash": "^0.1.1",
     "cookie-parser": "latest",

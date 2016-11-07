@@ -1,35 +1,28 @@
 /* ========== Routings ======================= */
 
 module.exports = function (app, passport){
-	app.get('/', function (req, res){
-		res.render('../app/views/index',{
-			loginMessage : req.flash('loginMessage'),
-			signupMessage: req.flash('signupMessage')	
-		});
+
+	app.post('/signup', passport.authenticate('local-signup', {
+		successRedirect : '/me',
+		failureRedirect : '/loginerr',
+		failureFlash: true
+	}));
+
+	/*===== SECURE ==== */
+
+	app.get('/me', isLoggedIn,  function(req, res, next){
+		res.end('Welcome user');
 	});
 
-	app.get('/profile', isLoggedIn, function(req, res){
-			res.writeHead(200, {'Content-Type':'application/json'});
-			var profileJson = {user: req.user.id};
-			var json = JSON.stringify({
-				anObject : profileJson
-			});
-		response.end(json);
+	/* ========== Errors ====================== */
+
+	app.get('/loginerr', function(req, res, next){
+		res.json({'error' : req.flash('signupMessage')});
 	});
 
-	app.get('/auth/facebook', passport.authenticate('facebook', {scope : ['email']}));
-
-	app.get('/auth/facebook/callback', 
-		passport.authenticate('facebook', {
-			successRedirect : '/profile',
-		 	failureRedirect : '/'}));
-
-	app.get('/auth/google', passport.authenticate('google', {scope : ['profile', 'email']}));
-
-	app.get('/auth/google/callback', 
-		passport.authenticate('google', {
-			successRedirect : '/profile',
-		 	failureRedirect : '/'}));
+	app.get('/unauthorized', function(req, res, next){
+		res.json({'error' : 'not authorized'});
+	});
 
 	/* ========== Is LoggedIn function ======== */
 
@@ -37,6 +30,6 @@ module.exports = function (app, passport){
 		if (req.isAuthenticated()){
 			return next();
 		}
-		res.redirect('/profile');
+		res.redirect('/unauthorized');
 	}
 }

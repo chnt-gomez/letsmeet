@@ -23,8 +23,8 @@ var port = process.env.PORT || 8080;
 
 /* ================= Database connection (Set only 1) ===== */
 
-//mongoose.connect(configDatabase.url); // 			<--- Local
-//mongoose.connect(configDatabase.modulusUrl);		<--- Modulus
+mongoose.connect(configDatabase.url); // 				<--- Local
+//mongoose.connect(configDatabase.modulusUrl);//		<--- Modulus
 
 /* =========== Module Init =================== */
 
@@ -38,9 +38,8 @@ app.use(session({
 }));
 app.use(express.static(__dirname + '/public'));
 app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.session());		
 app.use(flash());
-app.set('view engine', 'ejs');
 
 /* ============== Routing ==================== */
 
