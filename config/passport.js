@@ -17,6 +17,7 @@ module.exports = function(passport){
 		});
 	});
 
+/* New user */
 	passport.use('local-signup', new LocalStrategy({
 		usernameField : 'email',
 		passwordField : 'password',
@@ -29,7 +30,7 @@ module.exports = function(passport){
 				if(err)
 					return done(err);
 				if(user)
-					return done(null, false, req.flash('signupMessage','The email is already taken'));
+					return done(null, false, req.flash('message','The email is already taken'));
 				else{
 					var newUser = new User();
 					newUser.local.email = email;
@@ -43,6 +44,28 @@ module.exports = function(passport){
 			});
 		});
 	}));
+
+	passport.use('local-login', new LocalStrategy({
+		usernameField : 'email',
+		passwordField : 'password',
+		passReqToCallback : true
+	}, function(req, email, password, done){
+		process.nextTick(function(){
+
+			User.findOne({'local.email' : email}, function(err, user){
+				if(err)
+					return done(err);
+				if(!user)
+					return done(null, false, req.flash('message', 'The user was not found'));
+				if(!user.validPassword(password)) {
+					return done(null, false, req.flash('message', 'Wrong password'));
+				}
+				return done(null, user);
+				
+			})
+
+		})
+	}))
 
 	/*=========== Local Authentication ==============*/
 };

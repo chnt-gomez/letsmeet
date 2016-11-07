@@ -9,20 +9,28 @@ module.exports = function (app, passport){
 		failureFlash: true
 	}));
 
+	app.post('/login', passport.authenticate('local-login', {
+		successRedirect : '/me',
+		failureRedirect : '/loginerr',
+		failureFlash : true
+	}));
+
 	app.get('/api/test', function(req, res){
 		res.json({'message' : 'this will be a very big call to see if there is a way to test all server'});
 	})
 
 	/*===== SECURE ==== */
 
-	app.get('/me', isLoggedIn,  function(req, res, next){
-		res.end('Welcome user');
+	app.get('/me', isLoggedIn,  function(req, res){
+		res.json({
+			'user' : req.user
+		});
 	});
 
 	/* ========== Errors ====================== */
 
 	app.get('/loginerr', function(req, res, next){4
-		var message = req.flash('signupMessage');
+		var message = req.flash('message');
 		
 		res.json({'error' : message[0]});
 	});
