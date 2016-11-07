@@ -17,13 +17,15 @@ module.exports = function (app, passport){
 
 	app.get('/api/test', function(req, res){
 		res.json({'message' : 'this will be a very big call to see if there is a way to test all server'});
-	})
+	});
 
 	/*===== SECURE ==== */
-
 	app.get('/me', isLoggedIn,  function(req, res){
 		res.json({
-			'user' : req.user
+			'me' : {
+				'email' : req.user.local.email,
+				'id' : req.user.id
+			}
 		});
 	});
 
